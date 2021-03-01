@@ -1,12 +1,10 @@
 package com.dev.bankingservice.repository;
 
 import com.dev.bankingservice.entity.Role;
-import javax.persistence.Id;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface RoleRepository extends JpaRepository<Role, Id> {
-    @Query("SELECT r FROM Role r WHERE r.roleName = :name")
-    Role getByName(@Param("name") Role.RoleName name);
+public interface RoleRepository extends JpaRepository<Role, Long> {
+    Optional<Role> getRoleByName(@Param("name") Role.RoleName name);
 }

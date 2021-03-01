@@ -12,7 +12,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public User create(User user) {
+    public User save(User user) {
         return userRepository.save(user);
     }
 
@@ -29,12 +29,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(User user) {
-        userRepository.save(user);
-    }
-
-    @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         userRepository.delete(userRepository.getOne(id));
     }
 }
