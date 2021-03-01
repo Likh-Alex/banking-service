@@ -12,13 +12,13 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
 
     @Override
-    public Role create(Role role) {
+    public Role save(Role role) {
         return roleRepository.save(role);
     }
 
     @Override
-    public Role getByName(String name) {
-        return roleRepository.getRoleByName(Role.RoleName.valueOf(name))
+    public Role getByRoleName(String name) {
+        return roleRepository.getByRoleName(Role.RoleName.valueOf(name))
                 .orElseThrow(() -> new RuntimeException("Can not get role by name :" + name));
     }
 }

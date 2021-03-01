@@ -3,7 +3,7 @@ package com.dev.bankingservice.service;
 import com.dev.bankingservice.entity.Role;
 
 public interface RoleService {
-    Role create(Role role);
+    Role save(Role role);
 
-    Role getByName(String name);
+    Role getByRoleName(String name);
 }
