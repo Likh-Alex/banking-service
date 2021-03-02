@@ -1,5 +1,6 @@
 package com.dev.bankingservice.entity;
 
+import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -22,7 +23,7 @@ public class Account {
     private String accountNumber;
     @Enumerated(EnumType.STRING)
     private Currency currency;
-    private Double balance;
+    private BigDecimal balance;
     @Column(name = "active")
     private boolean isActive;
     @ManyToOne

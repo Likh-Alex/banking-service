@@ -5,9 +5,11 @@ import com.dev.bankingservice.entity.Transaction;
 import com.dev.bankingservice.repository.AccountRepository;
 import com.dev.bankingservice.repository.TransactionRepository;
 import com.dev.bankingservice.service.TransactionService;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -22,11 +24,12 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public List<Transaction> getAllByAccount(int page, int size, Account account) {
         PageRequest pageable = PageRequest.of(page, size, Sort.by("date").descending());
-        return transactionRepository.getAllByAccount(account.getAccountNumber(), pageable);
+        return transactionRepository.getAllByAccountNumber(account.getAccountNumber(), pageable);
     }
 
+    @Transactional
     @Override
-    public void transferFunds(String accountFrom, String accountTo, Double amount) {
+    public void transferFunds(String accountFrom, String accountTo, BigDecimal amount) {
         Account withdrawAccount = accountRepository
                 .getByAccountNumber(accountFrom).orElseThrow(()
                         -> new EntityNotFoundException("Can not find account with number : "
@@ -42,12 +45,13 @@ public class TransactionServiceImpl implements TransactionService {
         withdrawTransaction.setAccountTo(inputAccount);
         withdrawTransaction.setAmount(amount);
         transactionRepository.save(withdrawTransaction);
-        if (withdrawAccount.getBalance() - amount <= 0.0) {
+        BigDecimal estimatedBalance = withdrawAccount.getBalance().subtract(amount);
+        if (estimatedBalance.compareTo(new BigDecimal("0.0")) >= 0) {
             throw new RuntimeException("Not enough funds on account : " + accountFrom);
         }
-        withdrawAccount.setBalance(withdrawAccount.getBalance() - amount);
+        withdrawAccount.setBalance(withdrawAccount.getBalance().subtract(amount));
         accountRepository.save(withdrawAccount);
-        inputAccount.setBalance(inputAccount.getBalance() + amount);
+        inputAccount.setBalance(inputAccount.getBalance().add(amount));
         accountRepository.save(inputAccount);
         Transaction inputTransaction = new Transaction();
         inputTransaction.setDate(LocalDateTime.now());

@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     @Query("FROM Transaction t JOIN FETCH t.accountFrom afo JOIN FETCH t.accountTo ato "
             + "WHERE afo.accountNumber = ?1 OR ato.accountNumber = ?1")
-    List<Transaction> getAllByAccount(String accountNumber, PageRequest pageable);
+    List<Transaction> getAllByAccountNumber(String accountNumber, PageRequest pageable);
 }
